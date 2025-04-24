@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-receiver
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: traffic-receiver
+  template:
+    metadata:
+      labels:
+        app: traffic-receiver
+    spec:
+      containers:
+        - name: traffic-receiver
+          image: python:3.11-slim
+          command: ["python"]
+          args:
+            - -u
+            - -c
+            - |
+              import socket, threading
+
+              def handle_client(conn, addr):
+                  """Drain inbound data with minimal overhead; no per‑msg prints."""
+                  try:
+                      with conn:
+                          while conn.recv(1024):
+                              pass
+                  except Exception:
+                      pass  # suppress noisy errors
+
+              # ── socket setup ──────────────────────────────────────────────────
+              s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+              s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+              s.bind(('0.0.0.0', 9999))
+              s.listen(1024)   # kernel will cap to somaxconn (128 on most nodes)
+              print("✅ Receiver listening on 9999 (requested backlog 1024)")
+
+              # ── accept loop ──────────────────────────────────────────────────
+              while True:
+                  conn, addr = s.accept()
+                  threading.Thread(target=handle_client,
+                                   args=(conn, addr),
+                                   daemon=True).start()
+          ports:
+            - containerPort: 9999
+          resources:
+            requests:
+              cpu: 200m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traffic-receiver
+  namespace: dev
+spec:
+  clusterIP: None      # headless service for direct pod access
+  selector:
+    app: traffic-receiver
+  ports:
+    - protocol: TCP
+      port: 9999
+      targetPort: 9999

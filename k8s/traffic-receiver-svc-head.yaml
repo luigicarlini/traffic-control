@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traffic-receiver
+  namespace: dev
+spec:
+  clusterIP: None      # headless service for direct pod access
+  selector:
+    app: traffic-receiver
+  ports:
+    - protocol: TCP
+      port: 9999
+      targetPort: 9999
+

@@ -1,0 +1,33 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: traffic-receiver-hpa
+  namespace: dev
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: traffic-receiver
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Pods
+      pods:
+        metric:
+          name: container_network_packets_total
+        target:
+          type: AverageValue
+          averageValue: "550"
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 10        # Default is 0, but 10 adds a minimal buffer
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 10                 # Can scale up 2 pods every 10s
+    scaleDown:
+      stabilizationWindowSeconds: 30        # Avoid immediate scale down when traffic dips
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 10                 # Shrink up to 1 pods per 10s

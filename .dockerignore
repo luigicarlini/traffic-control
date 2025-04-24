@@ -1,0 +1,35 @@
+# 🔁 Python cache and compiled bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🚫 Local virtual environments and env files
+venv/
+.env
+*.env
+
+# 💾 OS-generated files
+.DS_Store
+Thumbs.db
+
+# 🧪 Test artifacts (if you add tests later)
+*.log
+*.coverage
+coverage.xml
+htmlcov/
+
+# 🔄 Git repo (not needed in container)
+.git/
+.gitignore
+
+# 🧱 Kubernetes manifests — excluded from container
+k8s/
+
+# 🔧 IDE / Editor metadata
+.vscode/
+.idea/
+*.swp
+
+# 📄 Docker build leftovers
+Dockerfile~

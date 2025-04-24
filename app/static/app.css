@@ -1,0 +1,56 @@
+body {
+  background-color: #f5f8fa;
+  font-family: 'Segoe UI', sans-serif;
+  padding-top: 30px;
+  padding-bottom: 40px;
+}
+
+h2 {
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+form label {
+  font-weight: 500;
+}
+
+form input {
+  margin-top: 5px;
+}
+
+.btn {
+  width: 100%;
+  font-weight: 500;
+}
+
+#stop-btn {
+  background-color: #e63946;
+  border-color: #e63946;
+}
+
+#stop-btn:hover {
+  background-color: #d62828;
+  border-color: #d62828;
+}
+
+footer {
+  margin-top: 60px;
+  font-size: 0.9rem;
+  color: #888;
+  text-align: center;
+}
+
+/* Status Bar */
+#status-bar {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Blinking burst alert */
+.blink {
+  animation: blinker 0.7s linear infinite;
+}
+
+@keyframes blinker {
+  50% { opacity: 0.3; }
+}

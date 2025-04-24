@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traffic-settings
+  namespace: dev
+data:
+  DEFAULT_RATE_MS: "20"
+  DEFAULT_MESSAGES_PER_CONN: "100"

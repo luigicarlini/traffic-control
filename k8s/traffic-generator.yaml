@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-generator
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffic-generator
+  template:
+    metadata:
+      labels:
+        app: traffic-generator
+    spec:
+      containers:
+        - name: traffic-generator
+          image: k8s-master.local:5000/traffic-generator:fairshuffle
+          ports:
+            - containerPort: 5050
+          env:
+            - name: RECEIVER_SERVICE
+              value: traffic-receiver.dev.svc.cluster.local
+            - name: RECEIVER_PORT
+              value: "9999"
+            - name: MESSAGES_PER_CONNECTION
+              #value: "100"
+              value: "20"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            requests:
+              cpu: "1"
+              memory: 800Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traffic-generator
+  namespace: dev
+spec:
+  type: NodePort
+  selector:
+    app: traffic-generator
+  ports:
+    - port: 5050
+      targetPort: 5050
+      nodePort: 30080  # 🔓 expose outside cluster on this port
