@@ -53,6 +53,13 @@ kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/traffic-generator.yaml
 kubectl apply -f k8s/traffic-receiver.yaml
 
+| Stage / need                                                            | Suggested level | Why                                                                                                                                                       |
+| ----------------------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Day-to-day production** (cluster is stable, dashboards in place)      | `WARNING`       | • Keeps the console almost silent.<br>• Still prints DNS failures, TCP connect errors, or burst overrides—early signs that something is wrong.            |
+| **Routine testing / demo** (you want to see rate & burst updates)       | `INFO`          | • Adds one-line confirmations when you click “Apply Rate”, start/stop a burst, or when pods join/leave.<br>• Still low-noise; packet loops aren’t logged. |
+| **Debug session** (chasing an intermittent issue)                       | `DEBUG`         | • Full detail: config snapshots, per-thread actions, etc. Turn it on temporarily, then revert.                                                            |
+| **Post-mortem log scrape only** (everything is monitored by Prometheus) | `ERROR`         | • Logs *only* fatal exceptions. Smallest footprint but you lose early warnings.                                                                           |
+
 
 2. 🌐 Access Traffic Generator UI
 

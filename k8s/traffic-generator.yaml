@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: traffic-generator
-          image: k8s-master.local:5000/traffic-generator:fairshuffle
+          image: k8s-master.local:5000/traffic-generator:persist-quiet2
           ports:
             - containerPort: 5050
           env:
@@ -26,6 +26,8 @@ spec:
             - name: MESSAGES_PER_CONNECTION
               #value: "100"
               value: "20"
+            - name: LOG_LEVEL # ⬅︎ add this block
+              value: "DEBUG"   # DEBUG / INFO / WARNING / ERROR            
             - name: POD_NAME
               valueFrom:
                 fieldRef:
